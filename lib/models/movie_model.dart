@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'genre_movie_model.dart';
+
 class Movie extends Equatable {
   final int id;
   final num popularity;
@@ -24,8 +26,16 @@ class Movie extends Equatable {
         releaseDate = json["release_date"] ?? "";
 
   @override
-  List<Object> get props =>
-      [id, popularity, title, backPoster, poster, overview, rating];
+  List<Object> get props => [
+        id,
+        popularity,
+        title,
+        backPoster,
+        poster,
+        overview,
+        rating,
+        releaseDate
+      ];
 
   static const empty = Movie(0, 0, "", "", "", "", 0, "");
 }

@@ -10,48 +10,46 @@ class FavoritePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: ListView(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 100,
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              shape: BoxShape.rectangle,
-            ),
-            child: Align(
-              alignment: AlignmentDirectional(0, 0),
-              child: Text(
-                'Favorite Movies',
-                textAlign: TextAlign.center,
-                style: favoriteHeader,
-              ),
-            ),
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: movieController.movies.length,
-            itemBuilder: (context, index) {
-              final movie = movieController.movies[index];
-              final title = movie.title;
-              final realeseDate = movie.releaseDate;
-              final popularity = movie.popularity;
-              final rating = movie.rating;
-              final overview = movie.overview;
-              final posterUrl =
-                  "https://image.tmdb.org/t/p/original${movie.poster}";
-              return CardMovie(
-                posterUrl: posterUrl,
-                title: title,
-                popularity: popularity,
-                overview: overview,
-                rating: rating,
-                realeseDate: realeseDate,
-              );
-            },
-          ),
-        ],
+      body: FutureBuilder(
+        future: movieController.getTopRated(), // Menggunakan future dari fungsi getAllMovie
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Menampilkan CircularProgressIndicator selama data sedang dimuat
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            // Menampilkan pesan error jika terjadi kesalahan
+            return Center(
+              child: Text('Error loading data'),
+            );
+          } else {
+            // Menampilkan data menggunakan ListView.builder
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: movieController.topMovies.length,
+              itemBuilder: (context, index) {
+                final movie = movieController.topMovies[index];
+                final title = movie.title;
+                final realeseDate = movie.releaseDate;
+                final popularity = movie.popularity;
+                final rating = movie.rating;
+                final overview = movie.overview;
+                final posterUrl =
+                    "https://image.tmdb.org/t/p/original${movie.poster}";
+                return CardMovie(
+                  posterUrl: posterUrl,
+                  title: title,
+                  popularity: popularity,
+                  overview: overview,
+                  rating: rating,
+                  realeseDate: realeseDate,
+                );
+              },
+            );
+          }
+        },
       ),
     );
   }
